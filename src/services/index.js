@@ -1,12 +1,12 @@
-const baseUrl = 'https://enigmatic-waters-03857.herokuapp.com/api';
+const baseUrl = '/api/lockers';
 
 const getinitLockers = async () => {
-  const response = await fetch(`${baseUrl}/lockers`);
+  const response = await fetch(`${baseUrl}`);
   const data = await response.json();
   return data;
 };
 const getSearchedLockers = async (value) => {
-  const response = await fetch(`${baseUrl}/lockers/${value.toLowerCase()}`);
+  const response = await fetch(`${baseUrl}/${value.toLowerCase()}`);
   const data = await response.json();
   return data;
 };
