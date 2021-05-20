@@ -1,54 +1,29 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LockerItem from '../components/LockerItem';
-export default function Home() {
-  const initLockers = [
-    {
-      name: 'H295*W460*D520mm',
-      description: 'N450 per Item/mo N15,000 XX no of orders Online only price',
-      size: 'small',
-      firstPrice: 1,
-      quantity: 2,
-      city: 'lekki',
-      state: 'lagos',
-      id: 1,
-    },
-    {
-      name: 'H295*W460*D520mm',
-      description: 'N450 per Item/mo N15,000 XX no of orders Online only price',
-      size: 'small',
-      firstPrice: 1,
-      quantity: 2,
-      city: 'lekki',
-      state: 'lagos',
-      id: 2,
-    },
-    {
-      name: 'H295*W460*D520mm',
-      description: 'N450 per Item/mo N15,000 XX no of orders Online only price',
-      size: 'small',
-      firstPrice: 1,
-      quantity: 2,
-      city: 'ikorodu',
-      state: 'lagos',
-      id: 3,
-    },
-    {
-      name: 'H295*W460*D520mm',
-      description: 'N450 per Item/mo N15,000 XX no of orders Online only price',
-      size: 'small',
-      firstPrice: 1,
-      quantity: 2,
-      city: 'ikorodu',
-      state: 'lagos',
-      id: 4,
-    },
-  ];
+
+// services
+import lockerService from '../services';
+
+export default function Home({ initialLockers }) {
   const childReference = useRef(null);
-  const [lockers, setLockers] = useState(initLockers);
+  const [lockers, setLockers] = useState([]);
   const [search, setSearch] = useState('');
-  const getData = (e) => {
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setLockers(initialLockers);
+  }, [initialLockers]);
+  const getData = async (e) => {
     e.preventDefault();
-    console.log(search);
+    setLoading(true);
+    const data = await lockerService.getSearchedLockers(search);
+    setSearch('');
+    setLoading(false);
+    await setLockers(data);
+    childReference.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest',
+    });
   };
   return (
     <div className="home">
@@ -72,8 +47,14 @@ export default function Home() {
                     </div>
                     <div className="col-md-4">
                       <button className="button">
-                        <h3>Find Locker</h3>
-                        <small>One Naira for First Rent</small>
+                        {loading ? (
+                          <h3>Loading...</h3>
+                        ) : (
+                          <>
+                            <h3>Find Locker</h3>
+                            <small>One Naira for First Rent</small>
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -144,7 +125,7 @@ export default function Home() {
                   )}
                 </div>
                 <div className="row">
-                  <a href="">View all lockers at this location</a>
+                  <a href="#">View all lockers at this location</a>
                 </div>
               </div>
             </div>
